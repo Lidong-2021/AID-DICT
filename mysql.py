@@ -77,10 +77,7 @@ class Database:
 
     # 查询历史记录
     def do_hist(self, name):
-        sql = "select word from hist where name=%s"
+        sql = "select word,time from hist where name=%s  ORDER BY time desc limit 10;"
         self.cur.execute(sql, [name])
         r = self.cur.fetchall()
-        if r:
-            return str(r)
-        else:
-            return '没有历史记录'
+        return r

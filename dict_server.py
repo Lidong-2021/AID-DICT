@@ -3,6 +3,7 @@ from multiprocessing import Process
 import signal
 import sys
 from mysql import *
+from time import sleep
 
 # 定义全局变量
 HOST = '0.0.0.0'
@@ -39,7 +40,16 @@ def do_hist(c, data):
     tem = data.split(' ')
     name = tem[1]
     r = db.do_hist(name)
-    c.send(r.encode())
+    if r:
+        c.send(b'ok')
+        sleep(0.01)
+        for i in r:
+            msg = '%-16s %s' % i
+            c.send(msg.encode())
+            sleep(0.01)
+        c.send(b'##')
+    else:
+        c.send(b'fail')
 
 
 # 查询单词

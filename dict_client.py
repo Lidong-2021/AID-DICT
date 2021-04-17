@@ -3,6 +3,7 @@ dict 客户端
 """
 from socket import *
 import sys
+import re
 
 s = socket()
 server_addr = ('127.0.0.1', 8000)
@@ -23,18 +24,24 @@ def hist(name):
     request = "H %s" % name
     s.send(request.encode())
     data = s.recv(1024).decode()
-    print(data)
-
+    if data == 'ok':
+        while True:
+            msg = s.recv(1024).decode()
+            if msg == '##':
+                break
+            print(msg)
+    else:
+        print('没有记录')
 
 # 进入二级界面
 def login(name):
     while True:
         print("""
-        ======================================
+        ============请输入指令=================
         1.查单词        2.历史记录        3.注销
         ======================================
         """)
-        cmd = input("请输入指令")
+        cmd = input("")
         if cmd == '1':
             query(s, name)
         elif cmd == '2':
@@ -69,6 +76,7 @@ def register(s):
             print('注册失败')
             break
 
+
 # 登录
 def sign_in(s):
     while True:
@@ -88,12 +96,12 @@ def sign_in(s):
 def main():
     while True:
         print("""
-        =========================
-        1.注册    2.登录    3.退出
-        =========================
+        ==========欢迎进入字典查询系统==============
+        1.注册         2.登录         3.退出
+        =========================================
         """)
         # 发送消息
-        cmd = input('Msg>>')
+        cmd = input('请输入指令：')
         if cmd == '1':
             register(s)
         elif cmd == '2':
